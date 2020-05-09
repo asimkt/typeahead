@@ -52,17 +52,29 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
     <div className="TypeAhead">
       <form onSubmit={onSubmit}>
         <label htmlFor={`inputTypeAhead-${name}`}>Search {label ? `for ${label}` : ''}</label>
-        <input value={inputValue} type="text" id={`inputTypeAhead-${name}`} autoComplete="off" onChange={handleInput} />
+        <input
+          value={inputValue}
+          type="text"
+          id={`inputTypeAhead-${name}`}
+          autoComplete="off"
+          onChange={handleInput}
+          role="combobox"
+          aria-auto-complete="both"
+          aria-owns={`results-${name}`}
+          aria-activedescendant={active && (optionKey ? active[optionKey] : active)}
+        />
         {error ? <p>{errorMsg}</p> : null}
       </form>
-      <ul className="TypeAhead__options">
+      <ul className="TypeAhead__options" id={`results-${name}`} role="listbox">
         {options.slice(0, 10).map((option, index) => (
           <li
             key={index}
             onMouseOver={() => {
               applyActiveOption(option);
             }}
+            id={optionKey ? option[optionKey] : option}
             className={`TypeAhead__option ${active && option.id === active.id ? 'TypeAhead__option--selected' : ''}`}
+            role="option"
           >
             {optionKey ? option[optionKey] : option}
           </li>
