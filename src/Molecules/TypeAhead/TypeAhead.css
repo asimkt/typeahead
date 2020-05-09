@@ -1,12 +1,47 @@
 .TypeAhead {
   display: flex;
+  flex-direction: column;
+  width: 330px;
+  font-size: 14px;
+}
+
+.TypeAhead label {
+  margin-bottom: 5px;
+  display: flex;
 }
 
 .TypeAhead__options {
   list-style: none;
+  box-shadow: -2px 3px 8px 2px #3333333b;
+  margin: 0;
+}
+
+.TypeAhead__input,
+.TypeAhead__options {
+  border-radius: 4px;
+  border: 1px solid #c6ccd5;
+  outline: none;
+  margin-bottom: 8px;
+  color: #132437;
+  font-size: 14px;
+  padding: 0;
+}
+
+.TypeAhead__input {
+  padding: 6px 8px;
+  display: flex;
+  width: 100%;
+}
+
+.TypeAhead__option {
+  padding: 6px 8px;
+  color: #132437;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 .TypeAhead__option--selected {
-  background: #000;
-  color: aliceblue;
+  background: #2f81cd;
+  color: #f9f9f9;
+  outline: 0;
 }

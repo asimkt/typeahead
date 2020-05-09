@@ -58,6 +58,7 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
           id={`inputTypeAhead-${name}`}
           autoComplete="off"
           onChange={handleInput}
+          className="TypeAhead__input"
           role="combobox"
           aria-auto-complete="both"
           aria-owns={`results-${name}`}
