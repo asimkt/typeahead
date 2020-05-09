@@ -22,27 +22,41 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
     [],
   );
   const handleInput = e => {
+    // Set active as null so that user won't accidently select old value
+    setActive(null);
     setInputValue(e.target.value);
     debouncedApiCall(e.target.value);
   };
   const onSubmit = e => {
     e.preventDefault();
-    if (!active) {
+    if (!options[0]) {
       setError(errorMsg);
       return;
     }
+    applyActiveOption();
     console.log('Form submitted', active);
     typeof onOptionSelect === 'function' && onOptionSelect(active);
+  };
+  const applyActiveOption = opt => {
+    opt = opt || options[0];
+    setActive(opt);
+    setInputValue(optionKey ? opt[optionKey] : opt);
   };
   return (
     <div className="TypeAhead">
       <form onSubmit={onSubmit}>
         <label htmlFor={`inputTypeAhead-${name}`}>Search {label ? `for ${label}` : ''}</label>
         <input value={inputValue} type="text" id={`inputTypeAhead-${name}`} autoComplete="off" onChange={handleInput} />
+        {error ? <p>{errorMsg}</p> : null}
       </form>
       <ul className="suggestions">
         {options.slice(0, 10).map((option, index) => (
-          <li key={index} onHover={() => setActive(option)}>
+          <li
+            key={index}
+            onMouseOver={() => {
+              applyActiveOption(option);
+            }}
+          >
             {optionKey ? option[optionKey] : option}
           </li>
         ))}
