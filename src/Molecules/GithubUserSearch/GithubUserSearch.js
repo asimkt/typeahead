@@ -4,7 +4,7 @@ import TypeAhead from '../TypeAhead/TypeAhead';
 function GithubUserSearch() {
   return (
     <div className="GithubUserSearch">
-      <TypeAhead urlPrefix="https://api.github.com/search/users?q=" optionKey="login" label="Github Users: "/>
+      <TypeAhead apiPrefix="https://api.github.com/search/users?q=" optionKey="login" label="Github Users: "/>
     </div>
   );
 }
