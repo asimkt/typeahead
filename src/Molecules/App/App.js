@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import GithubUserSearch from '../GithubUserSearch/GithubUserSearch';
 
 function App() {
   return (
@@ -7,6 +8,7 @@ function App() {
       <header className="App-header">
         Accessible TypeAhead
       </header>
+      <GithubUserSearch />
     </div>
   );
 }
