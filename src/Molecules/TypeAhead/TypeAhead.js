@@ -16,7 +16,10 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
         setLoading(true);
         const response = await (await fetch(`${apiPrefix}${value}`)).json();
         setLoading(false);
-        if (response.items && Symbol.iterator in Object(response.items)) setOptions(response.items);
+        const apiOptions = response.items;
+        if (apiOptions && Symbol.iterator in Object(apiOptions)) {
+          setOptions(apiOptions);
+        }
       }
     }, 500),
     [],
@@ -36,7 +39,9 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
     applyActiveOption();
     console.log('Form submitted', active);
     // Callback the onOptionSelect prop, so that parent will get the selected output.
-    setTimeout(() => typeof onOptionSelect === 'function' && onOptionSelect(active), 0);
+    if (active) {
+      typeof onOptionSelect === 'function' && onOptionSelect(active);
+    }
   };
   const applyActiveOption = opt => {
     opt = opt || options[0];
@@ -50,13 +55,14 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
         <input value={inputValue} type="text" id={`inputTypeAhead-${name}`} autoComplete="off" onChange={handleInput} />
         {error ? <p>{errorMsg}</p> : null}
       </form>
-      <ul className="suggestions">
+      <ul className="TypeAhead__options">
         {options.slice(0, 10).map((option, index) => (
           <li
             key={index}
             onMouseOver={() => {
               applyActiveOption(option);
             }}
+            className={`TypeAhead__option ${active && option.id === active.id ? 'TypeAhead__option--selected' : ''}`}
           >
             {optionKey ? option[optionKey] : option}
           </li>

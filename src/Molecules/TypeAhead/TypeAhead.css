@@ -1,3 +1,12 @@
 .TypeAhead {
-    display: flex;
+  display: flex;
+}
+
+.TypeAhead__options {
+  list-style: none;
+}
+
+.TypeAhead__option--selected {
+  background: #000;
+  color: aliceblue;
 }
