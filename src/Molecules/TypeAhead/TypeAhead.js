@@ -35,7 +35,8 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
     }
     applyActiveOption();
     console.log('Form submitted', active);
-    typeof onOptionSelect === 'function' && onOptionSelect(active);
+    // Callback the onOptionSelect prop, so that parent will get the selected output.
+    setTimeout(() => typeof onOptionSelect === 'function' && onOptionSelect(active), 0);
   };
   const applyActiveOption = opt => {
     opt = opt || options[0];

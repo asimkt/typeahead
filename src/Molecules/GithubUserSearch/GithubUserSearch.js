@@ -7,9 +7,12 @@ function GithubUserSearch() {
     label: 'Github Users: ',
     errorMsg: 'Please select a github user',
   };
+  const showGitHubUser = user => {
+    console.log('user', user);
+  };
   return (
     <div className="GithubUserSearch">
-      <TypeAhead apiPrefix="https://api.github.com/search/users?q=" opts={opts} />
+      <TypeAhead apiPrefix="https://api.github.com/search/users?q=" opts={opts} onOptionSelect={showGitHubUser} />
     </div>
   );
 }
