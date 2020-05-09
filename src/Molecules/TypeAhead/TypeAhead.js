@@ -29,7 +29,7 @@ function TypeAhead({ apiPrefix, name = 'default', label, optionKey }) {
         <input value={inputValue} type="text" id={`inputTypeAhead-${name}`} autoComplete="off" onChange={handleInput} />
       </form>
       <ul className="suggestions">
-        {options.map((option, index) => (
+        {options.slice(0, 10).map((option, index) => (
           <li key={index}>{optionKey ? option[optionKey] : option}</li>
         ))}
       </ul>
