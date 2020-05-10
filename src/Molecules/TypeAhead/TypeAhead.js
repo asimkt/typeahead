@@ -14,6 +14,7 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
   const [isLoading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState('');
+  const [shouldBlurClose, setBlurClose] = useState(true);
   const debouncedApiCall = useCallback(
     debounce(async value => {
       if (apiPrefix) {
@@ -79,10 +80,9 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
         <label htmlFor={`inputTypeAhead-${name}`}>Search {label ? `for ${label}` : ''}</label>
         <input
           onBlur={() => {
-            // Execute in next call stack as we can handle other operations in the component.
-            setTimeout(() => {
+            if (shouldBlurClose) {
               setIsOpen(false);
-            }, 50);
+            }
           }}
           onKeyDown={handleKeyDown}
           value={inputValue}
@@ -99,7 +99,18 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
         {error ? <p>{errorMsg}</p> : null}
       </form>
       {isOpen ? (
-        <ul className="TypeAhead__options" id={`results-${name}`} role="listbox">
+        <ul
+          className="TypeAhead__options"
+          id={`results-${name}`}
+          role="listbox"
+          onMouseEnter={() => {
+            // So that `li` click won't remove the component from DOM.
+            setBlurClose(false);
+          }}
+          onMouseLeave={() => {
+            setBlurClose(true);
+          }}
+        >
           {isLoading ? (
             <li className="TypeAhead__option">
               <Spinner />
@@ -111,7 +122,11 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
                 onMouseOver={() => {
                   applyActiveOption(option, index);
                 }}
-                onClick={callOnSubmit}
+                onClick={() => {
+                  callOnSubmit();
+                  setBlurClose(true);
+                  setIsOpen(false);
+                }}
                 id={optionKey ? option[optionKey] : option}
                 className={`TypeAhead__option ${
                   active && option.id === active.id ? 'TypeAhead__option--selected' : ''
