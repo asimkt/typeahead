@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import debounce from 'lodash/debounce';
 import './TypeAhead.css';
+import { getApiResponse } from './utils';
+import { Spinner } from '../../Atoms/Spinner/Spinner';
 // Component will do some kind of caching in Browser.
 // The server should cache the apiPrefix also to handle millions of requests per hour.
 function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
@@ -8,13 +10,14 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
   const [options, setOptions] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [active, setActive] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState('');
   const debouncedApiCall = useCallback(
     debounce(async value => {
       if (apiPrefix) {
         setLoading(true);
-        const response = await (await fetch(`${apiPrefix}${value}`)).json();
+        const response = value ? await getApiResponse(`${apiPrefix}${value}`) : {};
         setLoading(false);
         const apiOptions = response.items;
         if (apiOptions && Symbol.iterator in Object(apiOptions)) {
@@ -25,6 +28,7 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
     [],
   );
   const handleInput = e => {
+    setIsOpen(true);
     // Set active as null so that user won't accidently select old value
     setActive(null);
     setInputValue(e.target.value);
@@ -37,11 +41,11 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
       return;
     }
     applyActiveOption();
-    console.log('Form submitted', active);
     // Callback the onOptionSelect prop, so that parent will get the selected output.
     if (active) {
       typeof onOptionSelect === 'function' && onOptionSelect(active);
     }
+    setIsOpen(false);
   };
   const applyActiveOption = opt => {
     opt = opt || options[0];
@@ -66,21 +70,34 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
         />
         {error ? <p>{errorMsg}</p> : null}
       </form>
-      <ul className="TypeAhead__options" id={`results-${name}`} role="listbox">
-        {options.slice(0, 10).map((option, index) => (
-          <li
-            key={index}
-            onMouseOver={() => {
-              applyActiveOption(option);
-            }}
-            id={optionKey ? option[optionKey] : option}
-            className={`TypeAhead__option ${active && option.id === active.id ? 'TypeAhead__option--selected' : ''}`}
-            role="option"
-          >
-            {optionKey ? option[optionKey] : option}
-          </li>
-        ))}
-      </ul>
+      {isOpen ? (
+        <ul className="TypeAhead__options" id={`results-${name}`} role="listbox">
+          {isLoading ? (
+            <li className="TypeAhead__option">
+              <Spinner />
+            </li>
+          ) : (
+            options.slice(0, 10).map((option, index) => (
+              <li
+                key={index}
+                onMouseOver={() => {
+                  applyActiveOption(option);
+                }}
+                onClick={() => {
+                  setIsOpen(false);
+                }}
+                id={optionKey ? option[optionKey] : option}
+                className={`TypeAhead__option ${
+                  active && option.id === active.id ? 'TypeAhead__option--selected' : ''
+                }`}
+                role="option"
+              >
+                {optionKey ? option[optionKey] : option}
+              </li>
+            ))
+          )}
+        </ul>
+      ) : null}
     </div>
   );
 }
