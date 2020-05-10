@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import debounce from 'lodash/debounce';
 import './TypeAhead.css';
-import { getApiResponse } from './utils';
+import { getCachedApiResponse } from './utils';
 import { Spinner } from '../../Atoms/Spinner/Spinner';
 // Component will do some kind of caching in Browser.
 // The server should cache the apiPrefix also to handle millions of requests per hour.
@@ -17,7 +17,7 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
     debounce(async value => {
       if (apiPrefix) {
         setLoading(true);
-        const response = value ? await getApiResponse(`${apiPrefix}${value}`) : {};
+        const response = value ? await getCachedApiResponse(`${apiPrefix}${value}`) : {};
         setLoading(false);
         const apiOptions = response.items;
         if (apiOptions && Symbol.iterator in Object(apiOptions)) {
@@ -57,6 +57,9 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
       <form onSubmit={onSubmit}>
         <label htmlFor={`inputTypeAhead-${name}`}>Search {label ? `for ${label}` : ''}</label>
         <input
+          onBlur={() => {
+            setIsOpen(false);
+          }}
           value={inputValue}
           type="text"
           id={`inputTypeAhead-${name}`}

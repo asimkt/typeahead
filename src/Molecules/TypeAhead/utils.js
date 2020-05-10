@@ -1,5 +1,6 @@
 const cacheObj = {};
-export const getApiResponse = async url => {
+// TODO: Cleanup after the entries goes more than a limit
+export const getCachedApiResponse = async url => {
   if (cacheObj[url]) {
     return cacheObj[url];
   }
