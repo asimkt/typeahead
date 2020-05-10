@@ -13,6 +13,7 @@ function GithubUserSearch() {
   return (
     <div className="GithubUserSearch">
       <TypeAhead apiPrefix="https://api.github.com/search/users?q=" opts={opts} onOptionSelect={showGitHubUser} />
+      <TypeAhead apiPrefix="https://api.github.com/search/users?q=" opts={opts} onOptionSelect={showGitHubUser} />
     </div>
   );
 }
