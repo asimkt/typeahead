@@ -1,3 +1,10 @@
+# Accessible Typeahead
+
+This app is a working example of how the TypeAhead component works in a real world app.
+The component code is resides in `src/Molecules/TypeAhead`
+
+# Other information about the project
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
