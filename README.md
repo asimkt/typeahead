@@ -10,7 +10,18 @@ This app has been deployed to https://typeahead-rl.netlify.app/
 
 `TypeAhead` component helps users to autofill the option which they're going to type.
 
-### Props
+## Features:
+
+- Extensible `TypeAhead` component to use it multiple times in different places of the app.
+- Built accessibility in mind. Supports screen readers, keyboard navigation etc.
+- Supports different kinds of API structure with the use of `labelKey` and `optionsParent`
+- Support caching, so that we won't request the same API again in the same session to boost performance
+- Can pass any extra prop for extra styling.
+- Using latest React hooks which makes the code easy to read and understand.
+- Blazingly fast and small. Only depends on React and lodash/debounce.
+- Support all modern browsers.
+
+### Supported Props
 
 `TypeAhead` component accepts below props:
 
@@ -59,11 +70,10 @@ if the API response is like:
 
 The `labelKey` and the `optionsParent` will not be needed.
 
-## Features:
+### Todo
 
-- Extensible `TypeAhead` component to use it multiple times in different places of the app.
-- Build in accessible in mind. Supports screen readers, keyboard navigation etc.
-- Supports different kinds of API structure with the use of `labelKey` and `optionsParent`
+[ ] 90% test cases
+[ ] Full custom styling power to the user.
 
 # Other information about the project
 

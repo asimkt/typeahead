@@ -5,7 +5,7 @@ import { getCachedApiResponse } from './utils';
 import { Spinner } from '../../Atoms/Spinner/Spinner';
 // Component will do some kind of caching in Browser.
 // The server should cache the apiPrefix also to handle millions of requests per hour.
-function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
+function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts, ...restProps }) {
   const { errorMsg = 'Please select an option', labelKey, optionsParent, label } = opts;
   const [options, setOptions] = useState([]);
   const [inputValue, setInputValue] = useState('');
@@ -74,7 +74,7 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
     setInputValue(labelKey ? opt[labelKey] : opt);
   };
   return (
-    <div className="TypeAhead">
+    <div className="TypeAhead" {...restProps}>
       <form onSubmit={onSubmit}>
         <label htmlFor={`inputTypeAhead-${name}`}>Search {label ? `for ${label}` : ''}</label>
         <input
