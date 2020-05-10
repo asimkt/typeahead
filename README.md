@@ -1,9 +1,69 @@
 # Accessible Typeahead
 
 This app is a working example of how the TypeAhead component works in a real world app.
+
 The component code is resides in `src/Molecules/TypeAhead`
 
 This app has been deployed to https://typeahead-rl.netlify.app/
+
+## Documentation
+
+`TypeAhead` component helps users to autofill the option which they're going to type.
+
+### Props
+
+`TypeAhead` component accepts below props:
+
+| Prop           | Default | Description                                      | Required |
+| -------------- | ------- | ------------------------------------------------ | -------- |
+| apiPrefix      | null    | Which api to hit for the options                 | true     |
+| onOptionSelect | null    | Callback url to call on successful option select | true     |
+| opts           | {}      | options object                                   | false    |
+
+**Opts Prop** have the following structure:
+
+```
+const  opts  = {
+	optionKey:  'login', // The key to use for the option object under the API options response to show. Most of the time the API will return an array of option objects
+	itemsKey: // The key in the API response where we can see the options.
+	label:  'Github Users: ',
+	errorMsg:  'Please select a github user',
+};
+```
+
+#### Example 1
+
+if the API response is like:
+
+```
+{
+  items: [
+    {
+      name: 'Option 1',
+      id: 123123
+    },
+    ...
+```
+
+The `optionKey` will be name, and the `itemsKey` will be `items`
+
+#### Example 2
+
+if the API response is like:
+
+```
+ [
+     'option 1', 'option 2', ...
+]
+```
+
+The `optionKey` and the `itemsKey` will not be needed.
+
+## Features:
+
+- Extensible `TypeAhead` component to use it multiple times in different places of the app.
+- Build in accessible in mind. Supports screen readers, keyboard navigation etc.
+-
 
 # Other information about the project
 
