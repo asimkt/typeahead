@@ -6,7 +6,7 @@ import { Spinner } from '../../Atoms/Spinner/Spinner';
 // Component will do some kind of caching in Browser.
 // The server should cache the apiPrefix also to handle millions of requests per hour.
 function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
-  const { errorMsg = 'Please select an option', optionKey, label } = opts;
+  const { errorMsg = 'Please select an option', labelKey, optionsParent, label } = opts;
   const [options, setOptions] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [active, setActive] = useState(null);
@@ -21,8 +21,7 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
         setLoading(true);
         const response = value ? await getCachedApiResponse(`${apiPrefix}${value}`) : {};
         setLoading(false);
-        // Items key won't be there for every API. needs to fix this.
-        const apiOptions = response.items;
+        const apiOptions = optionsParent ? response[optionsParent] : response;
         if (apiOptions && Symbol.iterator in Object(apiOptions)) {
           setOptions(apiOptions);
         }
@@ -72,7 +71,7 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
     }
     setActive(opt);
     setActiveIndex(index || 0);
-    setInputValue(optionKey ? opt[optionKey] : opt);
+    setInputValue(labelKey ? opt[labelKey] : opt);
   };
   return (
     <div className="TypeAhead">
@@ -94,7 +93,7 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
           role="combobox"
           aria-auto-complete="both"
           aria-owns={`results-${name}`}
-          aria-activedescendant={active && (optionKey ? active[optionKey] : active)}
+          aria-activedescendant={active && (labelKey ? active[labelKey] : active)}
         />
         {error ? <p>{errorMsg}</p> : null}
       </form>
@@ -127,13 +126,13 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
                   setBlurClose(true);
                   setIsOpen(false);
                 }}
-                id={optionKey ? option[optionKey] : option}
+                id={labelKey ? option[labelKey] : option}
                 className={`TypeAhead__option ${
                   active && option.id === active.id ? 'TypeAhead__option--selected' : ''
                 }`}
                 role="option"
               >
-                {optionKey ? option[optionKey] : option}
+                {labelKey ? option[labelKey] : option}
               </li>
             ))
           )}

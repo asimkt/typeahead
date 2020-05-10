@@ -3,9 +3,10 @@ import TypeAhead from '../TypeAhead/TypeAhead';
 
 function GithubUserSearch() {
   const opts = {
-    optionKey: 'login',
+    labelKey: 'login',
     label: 'Github Users: ',
     errorMsg: 'Please select a github user',
+    optionsParent: 'items',
   };
   const showGitHubUser = user => {
     console.log('user', user);

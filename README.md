@@ -24,10 +24,10 @@ This app has been deployed to https://typeahead-rl.netlify.app/
 
 ```
 const  opts  = {
-	optionKey:  'login', // The key to use for the option object under the API options response to show. Most of the time the API will return an array of option objects
-	itemsKey: // The key in the API response where we can see the options.
+  optionsParent: 'items', // The key in the API response where we can see the options.
+	labelKey:  'userName', // The key to use for the option object under the API options response to show. Most of the time the API will return an array of option objects
 	label:  'Github Users: ',
-	errorMsg:  'Please select a github user',
+	errorMsg:  'Please select a Github user',
 };
 ```
 
@@ -45,7 +45,7 @@ if the API response is like:
     ...
 ```
 
-The `optionKey` will be name, and the `itemsKey` will be `items`
+The `optionsParent` will be `items`, and the `labelKey` will be `name`
 
 #### Example 2
 
@@ -57,13 +57,13 @@ if the API response is like:
 ]
 ```
 
-The `optionKey` and the `itemsKey` will not be needed.
+The `labelKey` and the `optionsParent` will not be needed.
 
 ## Features:
 
 - Extensible `TypeAhead` component to use it multiple times in different places of the app.
 - Build in accessible in mind. Supports screen readers, keyboard navigation etc.
--
+- Supports different kinds of API structure with the use of `labelKey` and `optionsParent`
 
 # Other information about the project
 
