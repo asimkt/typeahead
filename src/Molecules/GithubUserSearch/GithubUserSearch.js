@@ -12,6 +12,7 @@ function GithubUserSearch() {
   };
   return (
     <div className="GithubUserSearch">
+      {/* TODO: Test with different APIs */}
       <TypeAhead apiPrefix="https://api.github.com/search/users?q=" opts={opts} onOptionSelect={showGitHubUser} />
       <TypeAhead apiPrefix="https://api.github.com/search/users?q=" opts={opts} onOptionSelect={showGitHubUser} />
     </div>

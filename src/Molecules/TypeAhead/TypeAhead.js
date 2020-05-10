@@ -10,6 +10,7 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
   const [options, setOptions] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [active, setActive] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(null);
   const [isLoading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState('');
@@ -19,6 +20,7 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
         setLoading(true);
         const response = value ? await getCachedApiResponse(`${apiPrefix}${value}`) : {};
         setLoading(false);
+        // Items key won't be there for every API. needs to fix this.
         const apiOptions = response.items;
         if (apiOptions && Symbol.iterator in Object(apiOptions)) {
           setOptions(apiOptions);
@@ -31,8 +33,20 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
     setIsOpen(true);
     // Set active as null so that user won't accidently select old value
     setActive(null);
+    setActiveIndex(null);
     setInputValue(e.target.value);
     debouncedApiCall(e.target.value);
+  };
+  const handleKeyDown = e => {
+    let newIndex;
+    if ((e.which === 38 || e.which === 40) && !isLoading) {
+      // No active option -> set first option as active
+      if (!active) {
+        newIndex = 0;
+      }
+      newIndex = e.which === 38 ? activeIndex - 1 : activeIndex + 1;
+      applyActiveOption(options[newIndex], newIndex);
+    }
   };
   const onSubmit = e => {
     e.preventDefault();
@@ -40,16 +54,23 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
       setError(errorMsg);
       return;
     }
-    applyActiveOption();
-    // Callback the onOptionSelect prop, so that parent will get the selected output.
+    setIsOpen(false);
+    callOnSubmit();
+  };
+  const callOnSubmit = () => {
+    // Callback the onOptionSelect prop, so that parent will get the selected option.
     if (active) {
       typeof onOptionSelect === 'function' && onOptionSelect(active);
     }
-    setIsOpen(false);
   };
-  const applyActiveOption = opt => {
+  const applyActiveOption = (opt, index) => {
     opt = opt || options[0];
+    // Small performance improvement as I don't want to call this again and again.
+    if (opt == active) {
+      return;
+    }
     setActive(opt);
+    setActiveIndex(index || 0);
     setInputValue(optionKey ? opt[optionKey] : opt);
   };
   return (
@@ -58,8 +79,12 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
         <label htmlFor={`inputTypeAhead-${name}`}>Search {label ? `for ${label}` : ''}</label>
         <input
           onBlur={() => {
-            setIsOpen(false);
+            // Execute in next call stack as we can handle other operations in the component.
+            setTimeout(() => {
+              setIsOpen(false);
+            }, 50);
           }}
+          onKeyDown={handleKeyDown}
           value={inputValue}
           type="text"
           id={`inputTypeAhead-${name}`}
@@ -84,11 +109,9 @@ function TypeAhead({ apiPrefix, name = 'default', onOptionSelect, opts }) {
               <li
                 key={index}
                 onMouseOver={() => {
-                  applyActiveOption(option);
+                  applyActiveOption(option, index);
                 }}
-                onClick={() => {
-                  setIsOpen(false);
-                }}
+                onClick={callOnSubmit}
                 id={optionKey ? option[optionKey] : option}
                 className={`TypeAhead__option ${
                   active && option.id === active.id ? 'TypeAhead__option--selected' : ''
